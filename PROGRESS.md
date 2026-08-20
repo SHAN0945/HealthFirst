@@ -4,6 +4,7 @@ Tracks the phase checklist from the build plan. Check items off as they land; ke
 
 Repo: https://github.com/SHAN0945/HealthFirst
 DB: Neon Postgres (project connected, migration `20260820140629_init` applied)
+Live: https://healthcare-appointment-manager-three.vercel.app — verified working (login/session/role-gating tested against production)
 
 ## Phase 1 — Foundation ✅
 - [x] `create-next-app` (TypeScript, App Router, Tailwind)
@@ -41,7 +42,7 @@ DB: Neon Postgres (project connected, migration `20260820140629_init` applied)
 ## Phase 11 — Deliverables — not started
 
 ## Still needed from you
-- Vercel account connected (deploy step)
 - Anthropic API key (Phase 5)
 - Resend API key + verified sender (Phase 6)
 - Google Cloud OAuth client ID/secret (Phase 7)
+- Optional: connect the GitHub repo in the Vercel dashboard (Project → Settings → Git) for auto-deploy on push — the CLI's `vercel git connect` can't do this itself, it needs the Vercel GitHub App authorized on the repo. Not blocking; I redeploy manually with `vercel deploy --prod` in the meantime.
