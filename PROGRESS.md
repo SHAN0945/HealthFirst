@@ -18,7 +18,13 @@ Tracks the phase checklist from the build plan. Check items off as they land; ke
 - [x] Placeholder dashboard shells for all three roles
 - [ ] **Not yet tested end-to-end** — needs a real `DATABASE_URL` to run `prisma migrate dev` and actually log in
 
-## Phase 3 — Admin: Doctor Management — not started
+## Phase 3 — Admin: Doctor Management ✅ (code complete, untested against a real DB)
+- [x] Admin CRUD for doctor profiles: create (`POST /api/admin/doctors`), update (`PATCH /api/admin/doctors/[id]`), list (server-rendered on `/admin`)
+- [x] Working hours input (`src/lib/working-hours.ts`, `src/components/admin/working-hours-input.tsx`) — per-day HH:mm ranges, validated with zod
+- [x] Admin marks leave days (`POST /api/admin/doctors/[id]/leave`, `DELETE .../leave/[leaveId]`)
+- [x] Leave conflict handling (`src/lib/leave.ts`): marking leave on a date with existing bookings cancels those appointments and queues EMAIL + CALENDAR notifications per affected patient — runs synchronously in the same request
+- [x] Notification queue (`src/lib/notifications.ts`) writes `NotificationLog` rows as PENDING; actual sending lands in Phase 6 (email) / Phase 7 (calendar) / Phase 8 (cron processes the queue)
+- [ ] **Not yet tested end-to-end** — needs a real `DATABASE_URL`
 ## Phase 4 — Patient Booking Flow — not started
 ## Phase 5 — LLM Integration — not started
 ## Phase 6 — Email — not started

@@ -1,0 +1,24 @@
+import { z } from "zod";
+
+// Working hours are keyed by lowercase 3-letter day; a missing key means the
+// doctor doesn't work that day. Times are 24h "HH:mm" in the clinic's local
+// time (single-timezone assumption — documented as a scope limit).
+export const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
+export type DayKey = (typeof DAY_KEYS)[number];
+
+const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+const dayRangeSchema = z
+  .object({
+    start: z.string().regex(timeRegex, "Expected HH:mm"),
+    end: z.string().regex(timeRegex, "Expected HH:mm"),
+  })
+  .refine((r) => r.start < r.end, { message: "start must be before end" });
+
+export const workingHoursSchema = z
+  .record(z.enum(DAY_KEYS), dayRangeSchema)
+  .refine((wh) => Object.keys(wh).length > 0, {
+    message: "At least one working day is required",
+  });
+
+export type WorkingHours = z.infer<typeof workingHoursSchema>;
