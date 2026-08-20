@@ -11,7 +11,8 @@ DB: Neon Postgres (project connected, migration `20260820140629_init` applied)
 - [x] `.env.example` with every var needed
 - [x] Pushed to GitHub (`main`)
 - [x] Neon Postgres provisioned, first migration run against it
-- [ ] Deploy to Vercel — next up
+- [x] Deployed to Vercel — https://healthcare-appointment-manager-three.vercel.app (project `shan0945s-projects/healthcare-appointment-manager`)
+  - Note: early deploy attempts sat permanently BLOCKED with no error shown by `vercel deploy`'s streaming output — root cause (found via the Vercel REST API, not the CLI UI) was that git commit authorship didn't match a verified member of the Vercel team, which Vercel silently blocks as an anti-abuse measure. Fixed by setting `git config user.email/user.name` to the account's actual GitHub-linked identity before committing.
 
 ## Phase 2 — Auth & Roles ✅ verified end-to-end
 - [x] NextAuth v5 credentials provider, bcrypt password hashing
