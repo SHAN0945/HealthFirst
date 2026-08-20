@@ -15,9 +15,21 @@ const dayRangeSchema = z
   })
   .refine((r) => r.start < r.end, { message: "start must be before end" });
 
+// Not z.record(z.enum(DAY_KEYS), ...): in Zod v4, a record keyed by an
+// enum/literal union requires ALL keys to be present, which is the opposite
+// of what we want (missing key = doctor doesn't work that day). An object
+// with every day marked optional gets the "partial map" semantics we need.
 export const workingHoursSchema = z
-  .record(z.enum(DAY_KEYS), dayRangeSchema)
-  .refine((wh) => Object.keys(wh).length > 0, {
+  .object({
+    mon: dayRangeSchema.optional(),
+    tue: dayRangeSchema.optional(),
+    wed: dayRangeSchema.optional(),
+    thu: dayRangeSchema.optional(),
+    fri: dayRangeSchema.optional(),
+    sat: dayRangeSchema.optional(),
+    sun: dayRangeSchema.optional(),
+  })
+  .refine((wh) => Object.values(wh).some(Boolean), {
     message: "At least one working day is required",
   });
 
