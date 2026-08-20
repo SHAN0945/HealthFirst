@@ -145,11 +145,15 @@ model Appointment {
   notifications       NotificationLog[]
   medicationReminders MedicationReminder[]
 
-  // The core double-booking guard: a doctor cannot have two rows with the
-  // same slotStart. Combined with a DB transaction + unique-violation catch
-  // in the booking API, this is the single source of truth for conflicts —
-  // see write-up.
-  @@unique([doctorId, slotStart])
+  // The core double-booking guard is a PARTIAL unique index on
+  // (doctorId, slotStart) WHERE status IN ('PENDING','CONFIRMED') — added by
+  // hand in the migration SQL (see migrations/*_partial_unique_active_slot),
+  // since Prisma's schema DSL can't express a filtered unique index. A plain
+  // `@@unique` here would be wrong: it would permanently lock a slot even
+  // after cancellation, blocking re-booking forever. The booking API relies
+  // on this index + a unique-violation catch as the single source of truth
+  // for conflicts (not client-side checks) — see the write-up.
+  @@index([doctorId, slotStart])
   @@index([patientId])
   @@index([doctorId, slotStart, status])
 }
