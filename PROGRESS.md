@@ -2,38 +2,45 @@
 
 Tracks the phase checklist from the build plan. Check items off as they land; keep this file up to date so work can resume across sessions without re-deriving state.
 
+Repo: https://github.com/SHAN0945/HealthFirst
+DB: Neon Postgres (project connected, migration `20260820140629_init` applied)
+
 ## Phase 1 — Foundation ✅
 - [x] `create-next-app` (TypeScript, App Router, Tailwind)
 - [x] Prisma installed, full schema written (`prisma/schema.prisma`), client generates cleanly
 - [x] `.env.example` with every var needed
-- [ ] Push to GitHub, deploy to Vercel — **blocked on account access, see below**
-- [ ] Neon Postgres provisioned, first migration run against it
+- [x] Pushed to GitHub (`main`)
+- [x] Neon Postgres provisioned, first migration run against it
+- [ ] Deploy to Vercel — next up
 
-## Phase 2 — Auth & Roles ✅ (code complete, untested against a real DB)
+## Phase 2 — Auth & Roles ✅ verified end-to-end
 - [x] NextAuth v5 credentials provider, bcrypt password hashing
 - [x] Role on JWT/session (`src/auth.ts`, `src/types/next-auth.d.ts`)
 - [x] `src/proxy.ts` (Next.js 16 middleware convention) protects `/admin`, `/doctor`, `/patient` by role
 - [x] Patient self-registration (`/register`, `POST /api/auth/register`)
 - [x] Admin bootstrap via `prisma/seed.ts` (`ADMIN_EMAIL`/`ADMIN_PASSWORD`)
 - [x] Placeholder dashboard shells for all three roles
-- [ ] **Not yet tested end-to-end** — needs a real `DATABASE_URL` to run `prisma migrate dev` and actually log in
+- [x] Smoke-tested against live Neon DB: register → sign in → role-based redirect all confirmed working
 
-## Phase 3 — Admin: Doctor Management ✅ (code complete, untested against a real DB)
+## Phase 3 — Admin: Doctor Management ✅ verified end-to-end
 - [x] Admin CRUD for doctor profiles: create (`POST /api/admin/doctors`), update (`PATCH /api/admin/doctors/[id]`), list (server-rendered on `/admin`)
 - [x] Working hours input (`src/lib/working-hours.ts`, `src/components/admin/working-hours-input.tsx`) — per-day HH:mm ranges, validated with zod
 - [x] Admin marks leave days (`POST /api/admin/doctors/[id]/leave`, `DELETE .../leave/[leaveId]`)
 - [x] Leave conflict handling (`src/lib/leave.ts`): marking leave on a date with existing bookings cancels those appointments and queues EMAIL + CALENDAR notifications per affected patient — runs synchronously in the same request
 - [x] Notification queue (`src/lib/notifications.ts`) writes `NotificationLog` rows as PENDING; actual sending lands in Phase 6 (email) / Phase 7 (calendar) / Phase 8 (cron processes the queue)
-- [ ] **Not yet tested end-to-end** — needs a real `DATABASE_URL`
+- [x] Smoke-tested: created a doctor, marked a leave day, confirmed via `GET /api/admin/doctors` — all against live Neon DB (test fixtures cleaned up after)
+
 ## Phase 4 — Patient Booking Flow — not started
 ## Phase 5 — LLM Integration — not started
 ## Phase 6 — Email — not started
 ## Phase 7 — Google Calendar — not started
 ## Phase 8 — Background Jobs — not started
-## Phase 9 — Leave Conflict Handling — not started
+## Phase 9 — Leave Conflict Handling — not started (partially covered by Phase 3's leave.ts; revisit for anything left over)
 ## Phase 10 — Polish & Deploy Stability — not started
 ## Phase 11 — Deliverables — not started
 
-## Blocked on account access
-
-The sandbox this was built in has no `gh` CLI and no authenticated `vercel`/Neon session — these need your own accounts. Nothing else is blocked on this; code-only phases can keep going in parallel. See the chat for the specific asks (GitHub repo, Neon connection string, Anthropic/Resend/Google API keys).
+## Still needed from you
+- Vercel account connected (deploy step)
+- Anthropic API key (Phase 5)
+- Resend API key + verified sender (Phase 6)
+- Google Cloud OAuth client ID/secret (Phase 7)
